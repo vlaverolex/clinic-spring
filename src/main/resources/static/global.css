@@ -1,0 +1,93 @@
+body, button, a {
+    text-transform: uppercase;
+}
+
+
+body {
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    font-size: 16px;
+    color: #202027;
+    font-family: Arial, sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: #202027;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 900px;
+    padding: 0;
+    margin: 0 auto;
+}
+
+.section {
+    padding: 25px 0;
+}
+
+.section__user-block__item {
+    margin-bottom: 15px;
+}
+
+.section__user-block__name {
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.section__user-block_doctor-categories {
+    font-size: 14px;
+}
+
+.section__user-block__item form {
+    margin-top: 5px;
+}
+
+.section-index__inner {
+    display: flex;
+    justify-content: space-around;
+    font-size: 24px;
+}
+
+.section-show-all__add-button {
+    font-size: 18px;
+}
+
+.section-show-all__title {
+    text-align: center;
+    margin: 20px 0 10px;
+    font-size: 30px;
+}
+
+thead, tbody {
+    text-align: center;
+}
+
+.lang-choose {
+    display: flex;
+    justify-content: space-between;
+    align-items: center
+}
+
+.lang-choose__separator {
+    color: white;
+    font-size: 25px;
+    margin: 0 5px
+}
+
+.medical-note-view-link{
+    position: relative;
+}
+
+.medical-note-view-link i{
+    position: absolute;
+    top: 27%;
+    left: 110%;
+    color: #00ced1;
+}

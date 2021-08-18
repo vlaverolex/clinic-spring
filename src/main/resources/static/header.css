@@ -1,0 +1,18 @@
+.header{
+    background: darkturquoise;
+    padding: 10px 0;
+}
+
+.header__inner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header a{
+    color: white;
+}
+
+.header__inner-logo{
+    font-size: 30px;
+}
