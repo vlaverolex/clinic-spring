@@ -81,13 +81,23 @@ thead, tbody {
     margin: 0 5px
 }
 
-.medical-note-view-link{
+.medical-note-view-link {
     position: relative;
 }
 
-.medical-note-view-link i{
+.medical-note-view-link i {
     position: absolute;
     top: 27%;
     left: 110%;
     color: #00ced1;
+}
+
+.procedures-title, .surgery-title {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 20px;
+}
+
+.note-item{
+    margin-bottom: 10px;
 }

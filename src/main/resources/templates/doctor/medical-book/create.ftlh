@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="/header.css">
     <link rel="stylesheet" href="/global.css">
 
+    <title>Note</title>
+
 </head>
 <body>
 
@@ -32,19 +34,21 @@
                         <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                         <div class="form-group">
                             <label for="diagnosis"><@spring.message ("diagnosis") /></label>
-                            <input required type="text" class="form-control" id="diagnosis" placeholder="<@spring.message ("diagnosis") />"
+                            <input required type="text" class="form-control" id="diagnosis"
+                                   placeholder="<@spring.message ("diagnosis") />"
                                    name="diagnosis">
                         </div>
                         <div class="form-group">
                             <label for="procedures"><@spring.message ("procedures") /></label>
-                            <input required type="text" class="form-control" id="procedures" placeholder="<@spring.message ("procedures") />"
-                                   name="procedures">
+                            <textarea required  class="form-control" id="procedures"
+                                      placeholder="<@spring.message ("procedures") />"
+                                      name="procedures"></textarea>
                         </div>
                         <div class="form-group">
                             <label for="surgery"><@spring.message ("surgery") /></label>
-                            <input type="text" class="form-control" id="surgery"
-                                   placeholder="<@spring.message ("surgery") />"
-                                   name="surgery">
+                            <textarea  class="form-control" id="surgery"
+                                      placeholder="<@spring.message ("surgery") />"
+                                      name="surgery"></textarea>
                         </div>
                         <button type="submit" class="btn btn-success"><@spring.message ("add") /></button>
                     </form>

@@ -16,7 +16,6 @@ import java.util.Set;
 @Table(name = "nurse")
 @Getter
 @Setter
-@ToString
 public class Nurse extends User {
 
     public Nurse() {

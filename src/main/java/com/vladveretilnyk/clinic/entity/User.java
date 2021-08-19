@@ -19,7 +19,6 @@ import java.util.Set;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Getter
 @Setter
-@ToString
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -50,6 +49,14 @@ public class User implements UserDetails {
     public void removeRole(Role role) {
         this.roles.remove(role);
         role.getUsers().remove(this);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                '}';
     }
 
     @Override

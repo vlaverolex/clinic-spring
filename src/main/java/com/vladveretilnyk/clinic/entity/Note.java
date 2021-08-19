@@ -22,6 +22,7 @@ public class Note {
 
     private String diagnosis;
 
+    @Column(length = 3000)
     private String procedures;
 
     private String surgery;
@@ -35,6 +36,10 @@ public class Note {
     private boolean isProceduresDone;
 
     private boolean isSurgeryDone;
+
+    private Long doctorIdWhoCreatedNote;
+
+    private Long personIdWhoMadeProcedures;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Patient patient;

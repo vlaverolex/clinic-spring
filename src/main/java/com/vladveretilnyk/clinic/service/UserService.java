@@ -1,10 +1,7 @@
 package com.vladveretilnyk.clinic.service;
 
 import com.vladveretilnyk.clinic.entity.*;
-import com.vladveretilnyk.clinic.repository.DoctorRepository;
-import com.vladveretilnyk.clinic.repository.NurseRepository;
-import com.vladveretilnyk.clinic.repository.PatientRepository;
-import com.vladveretilnyk.clinic.repository.UserRepository;
+import com.vladveretilnyk.clinic.repository.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 
 @Service
@@ -23,15 +21,19 @@ public class UserService {
     private final DoctorRepository doctorRepository;
     private final NurseRepository nurseRepository;
     private final PatientRepository patientRepository;
+    private final NoteRepository noteRepository;
     private final static Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 
-    public UserService(UserRepository userRepository, DoctorRepository doctorRepository, NurseRepository nurseRepository, PatientRepository patientRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, DoctorRepository doctorRepository,
+                       NurseRepository nurseRepository, PatientRepository patientRepository,
+                       BCryptPasswordEncoder passwordEncoder, NoteRepository noteRepository) {
         this.userRepository = userRepository;
         this.doctorRepository = doctorRepository;
         this.nurseRepository = nurseRepository;
         this.patientRepository = patientRepository;
         this.passwordEncoder = passwordEncoder;
+        this.noteRepository = noteRepository;
     }
 
     public Page<Doctor> findAllDoctors(Pageable pageable) {
@@ -56,6 +58,7 @@ public class UserService {
 
     public void update(User user) {
         saveAndUpdate(user);
+        LOGGER.info("User updated = {}", user);
     }
 
     public Page<Patient> findPatientsByDoctorUsername(String username, Pageable pageable) {
@@ -84,46 +87,68 @@ public class UserService {
         }
     }
 
+    @Transactional
     public boolean assignDoctorForPatient(Long patientId, Long doctorId) {
         Patient patient = (Patient) findUserById(patientId);
         Doctor doctor = (Doctor) findUserById(doctorId);
         patient.setDoctor(doctor);
-        save(patient);
-        LOGGER.info("Assigned doctor = {} for patient = {}", doctor, patient);
+        LOGGER.info("Assigning doctor = {} for patient = {}", doctor, patient);
+        update(patient);
         return true;
     }
 
+    @Transactional
     public boolean assignNurseForPatient(Long patientId, Long nurseId) {
         Patient patient = (Patient) findUserById(patientId);
         Nurse nurse = (Nurse) findUserById(nurseId);
         patient.setNurse(nurse);
-        save(patient);
-        LOGGER.info("Assigned nurse = {} for patient = {}", nurse, patient);
+        LOGGER.info("Assigning nurse = {} for patient = {}", nurse, patient);
+        update(patient);
         return true;
     }
 
+    @Transactional
     public boolean removeDoctorForPatient(Long id) {
         Patient patient = (Patient) findUserById(id);
         patient.removeDoctor();
-        save(patient);
-        LOGGER.info("Removed doctor for patient = {}", patient);
+        LOGGER.info("Removing doctor for patient = {}", patient);
+        update(patient);
         return true;
     }
 
+    @Transactional
     public boolean removeNurseForPatient(Long id) {
         Patient patient = (Patient) findUserById(id);
         patient.removeNurse();
-        save(patient);
-        LOGGER.info("Removed nurse for patient = {}", patient);
+        LOGGER.info("Removing nurse for patient = {}", patient);
+        update(patient);
         return true;
     }
 
-    public boolean createNoteForPatient(Long id, Note note) {
+    @Transactional
+    public boolean createNoteForPatient(Long id, Note note, String doctorUsername) {
         note.setCreationDate(LocalDate.now());
+        note.setDoctorIdWhoCreatedNote(findUserByUsername(doctorUsername).getId());
         Patient patient = (Patient) findUserById(id);
         patient.addMedicalNote(note);
         save(patient);
         LOGGER.info("Created note = {} for patient = {}", note, patient);
+        return true;
+    }
+
+    @Transactional
+    public boolean makeProcedureForPatient(Long patientId, Long noteId, String personWhoMakeProcedures) {
+        Note note = noteRepository.findNoteById(noteId);
+        note.setPersonIdWhoMadeProcedures(findUserByUsername(personWhoMakeProcedures).getId());
+        note.setProceduresDone(true);
+        update(findUserById(patientId));
+        return true;
+    }
+
+    @Transactional
+    public boolean makeSurgeryForPatient(Long patientId, Long noteId) {
+        noteRepository.findNoteById(noteId).setSurgeryDone(true);
+        update(findUserById(patientId));
         return true;
     }
 }

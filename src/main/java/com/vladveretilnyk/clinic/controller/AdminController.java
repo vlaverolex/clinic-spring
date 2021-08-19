@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -58,9 +57,6 @@ public class AdminController {
     @GetMapping("/doctors")
     public String showAllDoctors(@RequestParam(required = false) String sort, @RequestParam(required = false) String direction,
                                  Pageable pageable, Model model) {
-
-        System.out.println(pageable.getPageSize());
-
         model.addAttribute("page", userService.findAllDoctors(
                 PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), SortUtility.getSort(sort, direction))
         ));
@@ -124,15 +120,12 @@ public class AdminController {
     public String saveNewDoctor(@ModelAttribute Doctor doctor, @RequestParam String categoryName,
                                 BindingResult bindingResult, Model model) {
         validator.validate(doctor, bindingResult);
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("categories", categoryService.findAll());
             model.addAttribute("maxDate", MAX_DATE_FOR_DOCTOR);
             return "admin/doctors/create";
         }
-
         doctor.setCategory(categoryService.findByName(categoryName));
-
         try {
             userService.save(doctor);
         } catch (DataIntegrityViolationException e) {
@@ -149,12 +142,10 @@ public class AdminController {
     public String saveNewNurse(@ModelAttribute Nurse nurse,
                                BindingResult bindingResult, Model model) {
         validator.validate(nurse, bindingResult);
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("maxDate", MAX_DATE_FOR_NURSE);
             return "admin/nurses/create";
         }
-
         try {
             userService.save(nurse);
         } catch (DataIntegrityViolationException e) {
@@ -171,15 +162,12 @@ public class AdminController {
     public String saveNewUser(@ModelAttribute Patient patient, @RequestParam String doctorUsername,
                               BindingResult bindingResult, Model model) {
         validator.validate(patient, bindingResult);
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("categoryDoctors", categoryService.findCategoryDoctors());
             model.addAttribute("maxDate", MAX_DATE_FOR_PATIENT);
             return "admin/patients/create";
         }
-
         patient.setDoctor((Doctor) userService.findUserByUsername(doctorUsername));
-
         try {
             userService.save(patient);
         } catch (DataIntegrityViolationException e) {
