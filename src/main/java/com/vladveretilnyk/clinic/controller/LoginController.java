@@ -1,7 +1,10 @@
 package com.vladveretilnyk.clinic.controller;
 
+import com.vladveretilnyk.clinic.entity.Role;
 import com.vladveretilnyk.clinic.entity.User;
 import com.vladveretilnyk.clinic.handler.AuthenticationSuccessHandlerImpl;
+import com.vladveretilnyk.clinic.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,15 +24,13 @@ public class LoginController {
     }
 
     @GetMapping("login")
-    public String getLoginPage(@RequestParam(name = "templates/error", required = false) String error,
+    public String getLoginPage(@RequestParam(name = "error", required = false) String error,
                                @RequestParam(name = "logout", required = false) String logout,
                                Model model) {
-
         if (SecurityContextHolder.getContext().
                 getAuthentication().getPrincipal().getClass().equals(User.class)) {
             return getUserIndexPage();
         }
-
 
         model.addAttribute("error", error != null);
         model.addAttribute("logout", logout != null);

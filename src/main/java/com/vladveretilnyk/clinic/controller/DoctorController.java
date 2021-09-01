@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/doctor")
@@ -29,7 +30,7 @@ public class DoctorController {
 
     @GetMapping
     public String indexPage(@RequestParam(name = "sort", required = false) String column, @RequestParam(required = false) String direction,
-                            Pageable pageable, Model model) {
+                            Pageable pageable, Model model)  {
         Sort sorting = SortUtility.getSort(column, direction);
         model.addAttribute("page", userService.findPatientsByDoctorUsername(
                 SecurityContextHolder.getContext().getAuthentication().getName(),
@@ -98,8 +99,10 @@ public class DoctorController {
 
     @GetMapping("/patients/{patientId}/medical-book/note/{noteId}")
     public String showNote(@PathVariable Long noteId, @PathVariable Long patientId, Model model) throws NoteNotFoundException, UserNotFoundException {
+        if(noteService.findById(noteId).getPersonIdWhoMadeProcedures()!=null){
+            model.addAttribute("executor", userService.findById(noteService.findById(noteId).getPersonIdWhoMadeProcedures()));
+        }
         model.addAttribute("doctor", userService.findById(noteService.findById(noteId).getDoctorIdWhoCreatedNote()));
-        model.addAttribute("executor",userService.findById(noteService.findById(noteId).getPersonIdWhoMadeProcedures()));
         model.addAttribute("patient", userService.findById(patientId));
         model.addAttribute("note", noteService.findById(noteId));
         return "doctor/medical-book/show";
@@ -111,6 +114,12 @@ public class DoctorController {
         userService.makeProcedureForPatient(patientId, noteId,
                 SecurityContextHolder.getContext().getAuthentication().getName());
         return "redirect:/doctor/patients/{patientId}/medical-book/note/{noteId}";
+    }
+
+    @PostMapping("/patients/{patientId}")
+    public String dischargePatient(@PathVariable Long patientId) throws UserNotFoundException {
+        userService.removeDoctorForPatient(patientId);
+        return "redirect:/doctor";
     }
 
     @PostMapping("/patients/{patientId}/medical-book/note/{noteId}/surgery-done")

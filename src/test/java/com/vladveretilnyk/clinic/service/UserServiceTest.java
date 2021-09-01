@@ -3,14 +3,21 @@ package com.vladveretilnyk.clinic.service;
 import com.vladveretilnyk.clinic.entity.*;
 import com.vladveretilnyk.clinic.exception.NoteNotFoundException;
 import com.vladveretilnyk.clinic.exception.UserNotFoundException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.AfterTransaction;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
@@ -20,6 +27,9 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Transactional
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
 public class UserServiceTest {
 
     @Autowired
@@ -61,7 +71,7 @@ public class UserServiceTest {
                 patients.stream().filter(user -> user.getRoles().contains(new Role(4L))).count());
     }
 
-    @Transactional
+    @Rollback
     @Test
     public void patientsShouldHaveDoctor() {
         Doctor doctor = new Doctor();
@@ -85,7 +95,6 @@ public class UserServiceTest {
         userService.delete(doctor);
     }
 
-    @Transactional
     @Test
     public void patientsShouldHaveNurse() {
         Nurse nurse = new Nurse();
@@ -109,7 +118,6 @@ public class UserServiceTest {
         userService.delete(nurse);
     }
 
-    @Transactional
     @Test
     public void patientShouldHaveSpecificDoctorAfterAssigning() throws UserNotFoundException {
         Patient patient = new Patient();
@@ -131,7 +139,6 @@ public class UserServiceTest {
         userService.delete(doctor);
     }
 
-    @Transactional
     @Test
     public void patientShouldHaveSpecificNurseAfterAssigning() throws UserNotFoundException {
         Patient patient = new Patient();
@@ -153,7 +160,6 @@ public class UserServiceTest {
         userService.delete(nurse);
     }
 
-    @Transactional
     @Test
     public void patientShouldNotHaveNurseAfterRemoving() throws UserNotFoundException {
         Patient patient = new Patient();
@@ -176,7 +182,6 @@ public class UserServiceTest {
         userService.delete(nurse);
     }
 
-    @Transactional
     @Test
     public void patientShouldNotHaveDoctorAfterRemoving() throws UserNotFoundException {
         Patient patient = new Patient();
@@ -199,7 +204,6 @@ public class UserServiceTest {
         userService.delete(doctor);
     }
 
-    @Transactional
     @Test
     public void patientShouldHaveNoteAfterNoteCreation() throws UserNotFoundException {
         Patient patient = new Patient();
@@ -223,7 +227,6 @@ public class UserServiceTest {
         userService.delete(patient);
     }
 
-    @Transactional
     @Test
     public void proceduresShouldBeDoneAfterMaking() throws UserNotFoundException, NoteNotFoundException {
         Patient patient = new Patient();
@@ -249,7 +252,6 @@ public class UserServiceTest {
         userService.delete(patient);
     }
 
-    @Transactional
     @Test
     public void surgeryShouldBeDoneAfterMaking() throws UserNotFoundException, NoteNotFoundException {
         Patient patient = new Patient();

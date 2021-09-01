@@ -9,7 +9,7 @@ public class ExceptionHandler {
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = NoteNotFoundException.class)
     public String exception(NoteNotFoundException exception) {
-        return "user_not_found";
+        return "note_not_found";
     }
 
     @org.springframework.web.bind.annotation.ExceptionHandler(value = UserNotFoundException.class)

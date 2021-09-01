@@ -1,6 +1,8 @@
 package com.vladveretilnyk.clinic.controller;
 
 import com.vladveretilnyk.clinic.controller.utility.SortUtility;
+import com.vladveretilnyk.clinic.exception.NoteNotFoundException;
+import com.vladveretilnyk.clinic.exception.UserNotFoundException;
 import com.vladveretilnyk.clinic.service.NoteService;
 import com.vladveretilnyk.clinic.service.UserService;
 import org.springframework.data.domain.PageRequest;
@@ -40,43 +42,31 @@ public class NurseController {
     @GetMapping("/patients/{patientId}/medical-book")
     public String showMedicalBookPage(Model model, @PathVariable Long patientId,
                                       @RequestParam(name = "sort", required = false) String column, @RequestParam(required = false) String direction,
-                                      Pageable pageable) {
-        try {
-            Sort sorting = SortUtility.getSort(column, direction);
-            model.addAttribute("patient", userService.findById(patientId));
-            model.addAttribute("page", noteService.findNotesByPatientId(patientId,
-                    (PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting))));
-            model.addAttribute("url", "/nurse/patients/" + patientId + "/medical-book");
-            sorting.forEach(sortingTmp -> model.addAttribute("sort", "sort=" + sortingTmp.getProperty() + "&direction=" + sortingTmp.getDirection().name()));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+                                      Pageable pageable) throws UserNotFoundException {
+        Sort sorting = SortUtility.getSort(column, direction);
+        model.addAttribute("patient", userService.findById(patientId));
+        model.addAttribute("page", noteService.findNotesByPatientId(patientId,
+                (PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting))));
+        model.addAttribute("url", "/nurse/patients/" + patientId + "/medical-book");
+        sorting.forEach(sortingTmp -> model.addAttribute("sort", "sort=" + sortingTmp.getProperty() + "&direction=" + sortingTmp.getDirection().name()));
         return "nurse/medical-book/notes";
     }
 
     @GetMapping("/patients/{patientId}/medical-book/note/{noteId}")
-    public String showNote(Model model, @PathVariable Long noteId, @PathVariable Long patientId) {
-        try {
-            model.addAttribute("doctor", userService.findById(noteService.findById(noteId).getDoctorIdWhoCreatedNote()));
+    public String showNote(Model model, @PathVariable Long noteId, @PathVariable Long patientId) throws NoteNotFoundException, UserNotFoundException {
+        if (noteService.findById(noteId).getPersonIdWhoMadeProcedures() != null) {
             model.addAttribute("executor", userService.findById(noteService.findById(noteId).getPersonIdWhoMadeProcedures()));
-            model.addAttribute("patient", userService.findById(patientId));
-            model.addAttribute("note", noteService.findById(noteId));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/nurse/patients";
         }
+        model.addAttribute("doctor", userService.findById(noteService.findById(noteId).getDoctorIdWhoCreatedNote()));
+        model.addAttribute("patient", userService.findById(patientId));
+        model.addAttribute("note", noteService.findById(noteId));
         return "nurse/medical-book/show";
     }
 
     @PostMapping("/patients/{patientId}/medical-book/note/{noteId}/procedures-done")
-    public String proceduresPerformMedicalNote(@PathVariable Long noteId, @PathVariable Long patientId) {
-        try {
-            userService.makeProcedureForPatient(patientId, noteId,
-                    SecurityContextHolder.getContext().getAuthentication().getName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "redirect:/nurse/patients";
-        }
+    public String proceduresPerformMedicalNote(@PathVariable Long noteId, @PathVariable Long patientId) throws UserNotFoundException, NoteNotFoundException {
+        userService.makeProcedureForPatient(patientId, noteId,
+                SecurityContextHolder.getContext().getAuthentication().getName());
         return "redirect:/nurse/patients/{patientId}/medical-book/note/{noteId}";
     }
 }

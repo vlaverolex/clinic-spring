@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -66,7 +67,7 @@ public class UserService {
         return patientRepository.findAll();
     }
 
-    public User findUserByUsername(String username) {
+    public User findUserByUsername(String username)  {
         return userRepository.findByUsername(username);
     }
 
@@ -88,22 +89,22 @@ public class UserService {
     }
 
     @Transactional
-    public Page<Patient> findPatientsByDoctorUsername(String username, Pageable pageable) {
+    public Page<Patient> findPatientsByDoctorUsername(String username, Pageable pageable)  {
         return patientRepository.findPatientsByDoctor((Doctor) findUserByUsername(username), pageable);
     }
 
     @Transactional
-    public List<Patient> findPatientsByDoctorUsername(String username) {
+    public List<Patient> findPatientsByDoctorUsername(String username)  {
         return patientRepository.findPatientsByDoctor((Doctor) findUserByUsername(username));
     }
 
     @Transactional
-    public Page<Patient> findPatientsByNurseUsername(String username, Pageable pageable) {
+    public Page<Patient> findPatientsByNurseUsername(String username, Pageable pageable)  {
         return patientRepository.findPatientsByNurse((Nurse) findUserByUsername(username), pageable);
     }
 
     @Transactional
-    public List<Patient> findPatientsByNurseUsername(String username) {
+    public List<Patient> findPatientsByNurseUsername(String username)  {
         return patientRepository.findPatientsByNurse((Nurse) findUserByUsername(username));
     }
 
@@ -130,8 +131,8 @@ public class UserService {
         Patient patient = (Patient) findById(patientId);
         Doctor doctor = (Doctor) findById(doctorId);
         patient.setDoctor(doctor);
-        LOGGER.info("Assigning doctor = {} for patient = {}", doctor, patient);
         update(patient);
+        LOGGER.info("Assigned doctor = {} for patient = {}", doctor, patient);
         return patient;
     }
 
@@ -140,8 +141,8 @@ public class UserService {
         Patient patient = (Patient) findById(patientId);
         Nurse nurse = (Nurse) findById(nurseId);
         patient.setNurse(nurse);
-        LOGGER.info("Assigning nurse = {} for patient = {}", nurse, patient);
         update(patient);
+        LOGGER.info("Assigned nurse = {} for patient = {}", nurse, patient);
         return patient;
     }
 
@@ -149,8 +150,9 @@ public class UserService {
     public Patient removeDoctorForPatient(Long id) throws UserNotFoundException {
         Patient patient = (Patient) findById(id);
         patient.removeDoctor();
-        LOGGER.info("Removing doctor for patient = {}", patient);
+        patient.removeNurse();
         update(patient);
+        LOGGER.info("Removed doctor and nurse for patient = {}", patient);
         return patient;
     }
 
@@ -158,8 +160,8 @@ public class UserService {
     public Patient removeNurseForPatient(Long id) throws UserNotFoundException {
         Patient patient = (Patient) findById(id);
         patient.removeNurse();
-        LOGGER.info("Removing nurse for patient = {}", patient);
         update(patient);
+        LOGGER.info("Removed nurse for patient = {}", patient);
         return patient;
     }
 
