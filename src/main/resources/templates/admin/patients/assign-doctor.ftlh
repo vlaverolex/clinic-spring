@@ -19,7 +19,7 @@
 <body>
 
 <#import '../../parts/header.ftlh' as h>
-<@h.header 'admin' "/admin"/>
+<@h.header 'admin' "/admin" "page=${page.number}" "${sort}"/>
 
 <section class="section section-show-all">
     <div class="container">
@@ -55,7 +55,7 @@
                         <td><@spring.message ("${doctor.category}")/></td>
                         <td>${doctor.patients?size}</td>
                         <td>
-                            <form method="post" action="/admin/patients/${id}/add-doctor/${doctor.id}">
+                            <form method="post" action="/admin/patients/${patient.id}/add-doctor/${doctor.id}">
                                 <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
                                 <button type="submit" class="btn btn-success"><@spring.message ("select")/></button>
                             </form>

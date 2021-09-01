@@ -16,7 +16,7 @@
 <body>
 
 <#import '../../parts/header.ftlh' as h>
-<@h.header 'nurse' "/nurse"/>
+<@h.header 'nurse' "/nurse" "" ""/>
 
 <section class="section section-show-all">
     <div class="container">

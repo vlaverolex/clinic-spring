@@ -1,6 +1,8 @@
 package com.vladveretilnyk.clinic.service;
 
 import com.vladveretilnyk.clinic.entity.Note;
+import com.vladveretilnyk.clinic.exception.NoteNotFoundException;
+import com.vladveretilnyk.clinic.exception.UserNotFoundException;
 import com.vladveretilnyk.clinic.repository.NoteRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +22,15 @@ public class NoteService {
         return noteRepository.findNotesByPatientId(id, pageable);
     }
 
-    public Note findNoteById(Long id) {
-        return noteRepository.findNoteById(id);
+    public Note findById(Long id) throws NoteNotFoundException {
+        if (noteRepository.findById(id).isPresent()) {
+            return noteRepository.findById(id).get();
+        }
+
+        throw new NoteNotFoundException("Note with id " + id + " not found!");
+    }
+
+    public void save(Note note) {
+        noteRepository.save(note);
     }
 }

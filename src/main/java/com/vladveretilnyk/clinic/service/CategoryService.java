@@ -22,7 +22,6 @@ public class CategoryService {
         DICTIONARY.put("Окуліст","Ophthalmologist");
         DICTIONARY.put("Дантист","Dentist");
         DICTIONARY.put("Лор","Lor");
-
     }
 
     public CategoryService(CategoryRepository categoryRepository) {

@@ -19,7 +19,7 @@
 <body>
 
 <#import '../../parts/header.ftlh' as h>
-<@h.header 'admin' "/admin"/>
+<@h.header 'admin' "/admin" "page=${page.number}" "${sort}"/>
 
 <section class="section section-show-all">
     <div class="container">

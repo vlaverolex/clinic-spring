@@ -19,7 +19,7 @@
 <body>
 
 <#import '../../parts/header.ftlh' as h>
-<@h.header 'admin' "/admin"/>
+<@h.header 'admin' "/admin" "" ""/>
 
 
 <div class="container">

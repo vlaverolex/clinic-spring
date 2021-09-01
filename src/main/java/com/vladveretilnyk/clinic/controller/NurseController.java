@@ -5,6 +5,7 @@ import com.vladveretilnyk.clinic.service.NoteService;
 import com.vladveretilnyk.clinic.service.UserService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,42 +25,58 @@ public class NurseController {
     }
 
     @GetMapping
-    public String indexPage(@RequestParam(required = false) String sort, @RequestParam(required = false) String direction,
+    public String indexPage(@RequestParam(name = "sort", required = false) String column, @RequestParam(required = false) String direction,
                             Pageable pageable, Model model) {
+        Sort sorting = SortUtility.getSort(column, direction);
         model.addAttribute("page", userService.findPatientsByNurseUsername(
                 SecurityContextHolder.getContext().getAuthentication().getName(),
-                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), SortUtility.getSort(sort, direction))
+                PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting)
         ));
         model.addAttribute("url", "/doctor");
-        model.addAttribute("sort", "sort=" + sort + "&direction=" + direction);
+        sorting.forEach(sortingTmp -> model.addAttribute("sort", "sort=" + sortingTmp.getProperty() + "&direction=" + sortingTmp.getDirection().name()));
         return "nurse/index";
     }
 
     @GetMapping("/patients/{patientId}/medical-book")
     public String showMedicalBookPage(Model model, @PathVariable Long patientId,
-                                      @RequestParam(required = false) String sort, @RequestParam(required = false) String direction,
+                                      @RequestParam(name = "sort", required = false) String column, @RequestParam(required = false) String direction,
                                       Pageable pageable) {
-        model.addAttribute("patient", userService.findUserById(patientId));
-        model.addAttribute("page", noteService.findNotesByPatientId(patientId,
-                (PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), SortUtility.getSort(sort, direction)))));
-        model.addAttribute("url", "/nurse/patients/" + patientId + "/medical-book");
-        model.addAttribute("sort", "sort=" + sort + "&direction=" + direction);
+        try {
+            Sort sorting = SortUtility.getSort(column, direction);
+            model.addAttribute("patient", userService.findById(patientId));
+            model.addAttribute("page", noteService.findNotesByPatientId(patientId,
+                    (PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sorting))));
+            model.addAttribute("url", "/nurse/patients/" + patientId + "/medical-book");
+            sorting.forEach(sortingTmp -> model.addAttribute("sort", "sort=" + sortingTmp.getProperty() + "&direction=" + sortingTmp.getDirection().name()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "nurse/medical-book/notes";
     }
 
     @GetMapping("/patients/{patientId}/medical-book/note/{noteId}")
     public String showNote(Model model, @PathVariable Long noteId, @PathVariable Long patientId) {
-        model.addAttribute("doctor", userService.findUserById(noteService.findNoteById(noteId).getDoctorIdWhoCreatedNote()));
-        model.addAttribute("executor",userService.findUserById(noteService.findNoteById(noteId).getPersonIdWhoMadeProcedures()));
-        model.addAttribute("patient", userService.findUserById(patientId));
-        model.addAttribute("note", noteService.findNoteById(noteId));
+        try {
+            model.addAttribute("doctor", userService.findById(noteService.findById(noteId).getDoctorIdWhoCreatedNote()));
+            model.addAttribute("executor", userService.findById(noteService.findById(noteId).getPersonIdWhoMadeProcedures()));
+            model.addAttribute("patient", userService.findById(patientId));
+            model.addAttribute("note", noteService.findById(noteId));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/nurse/patients";
+        }
         return "nurse/medical-book/show";
     }
 
     @PostMapping("/patients/{patientId}/medical-book/note/{noteId}/procedures-done")
     public String proceduresPerformMedicalNote(@PathVariable Long noteId, @PathVariable Long patientId) {
-        userService.makeProcedureForPatient(patientId,noteId,
-                SecurityContextHolder.getContext().getAuthentication().getName());
+        try {
+            userService.makeProcedureForPatient(patientId, noteId,
+                    SecurityContextHolder.getContext().getAuthentication().getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "redirect:/nurse/patients";
+        }
         return "redirect:/nurse/patients/{patientId}/medical-book/note/{noteId}";
     }
 }

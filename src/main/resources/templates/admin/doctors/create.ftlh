@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
-    <title>Medical book</title>
+    <title>Create</title>
 
     <link rel="stylesheet" href="/header.css">
     <link rel="stylesheet" href="/global.css">
@@ -19,7 +19,7 @@
 <body>
 
 <#import '../../parts/header.ftlh' as h>
-<@h.header 'admin' "/admin"/>
+<@h.header 'admin' "/admin" "" ""/>
 
 <div class="container">
     <div class="row">

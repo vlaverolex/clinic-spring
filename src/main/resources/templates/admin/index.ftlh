@@ -15,7 +15,7 @@
 <body>
 
 <#import '../parts/header.ftlh' as h>
-<@h.header 'admin' "/admin"/>
+<@h.header 'admin' "/admin" "" ""/>
 
 <section class="section section-index">
     <div class="container">

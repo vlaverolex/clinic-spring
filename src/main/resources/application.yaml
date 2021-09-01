@@ -1,5 +1,7 @@
 server:
   port: 8080
+  error:
+    path: /error
 
 spring:
   datasource:
@@ -11,6 +13,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    show-sql: true
 
   messages:
     basename: messages/messages, messages/messages_en, messages/messages_ua
@@ -19,4 +22,5 @@ spring:
     web:
       pageable:
         default-page-size: 10
+
 

@@ -25,7 +25,6 @@ public class AuthenticationSuccessHandlerImpl implements AuthenticationSuccessHa
     }
 
     public String determineTargetUrl(final Authentication authentication) {
-
         Map<String, String> roleTargetUrlMap = new HashMap<>();
         roleTargetUrlMap.put("ROLE_ADMIN", "/admin");
         roleTargetUrlMap.put("ROLE_DOCTOR", "/doctor");

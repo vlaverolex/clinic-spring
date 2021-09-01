@@ -33,12 +33,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
                 .loginProcessingUrl("/login")
+                .loginPage("/login")
                 .successHandler(authenticationSuccessHandler())
                 .permitAll()
                 .and()
-                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll();
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).permitAll()
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/forbidden");
+
     }
 
     @Bean
