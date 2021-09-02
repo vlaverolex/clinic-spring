@@ -22,6 +22,11 @@
 
 <section class="section section-show-all">
     <div class="container">
+        <div>
+            <a style="text-transform: capitalize !important;" class="btn btn-info back-button"
+               href="/admin"><@spring.message ("back")/></a>
+        </div>
+
         <div class="section__inner section-show-all">
             <div class="section-show-all__add-button">
 

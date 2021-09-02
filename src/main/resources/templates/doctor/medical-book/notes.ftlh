@@ -22,6 +22,11 @@
 
 <section class="section section-show-all">
     <div class="container">
+        <div>
+            <a style="text-transform: capitalize !important;" class="btn btn-info back-button"
+               href="/doctor"><@spring.message ("back")/></a>
+        </div>
+
         <div class="section-show-all__add-button">
             <a class="btn btn-primary"
                href="/doctor/patients/${patient.id}/medical-book/create-note"><@spring.message ("newNote") /></a>

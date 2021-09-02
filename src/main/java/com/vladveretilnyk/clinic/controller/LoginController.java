@@ -27,8 +27,8 @@ public class LoginController {
     public String getLoginPage(@RequestParam(name = "error", required = false) String error,
                                @RequestParam(name = "logout", required = false) String logout,
                                Model model) {
-        if (SecurityContextHolder.getContext().
-                getAuthentication().getPrincipal().getClass().equals(User.class)) {
+        if(SecurityContextHolder.getContext().
+                getAuthentication().getPrincipal() instanceof User){
             return getUserIndexPage();
         }
 

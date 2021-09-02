@@ -15,7 +15,7 @@
 
     <script src="https://kit.fontawesome.com/dd59a6bb17.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
 
 <#import '../parts/header.ftlh' as h>
 <@h.header 'doctor' "/doctor" "page=${page.number}" "${sort}"/>
@@ -76,6 +76,11 @@
     </div>
 </section>
 
-
+<script type="text/javascript">
+    window.history.forward();
+    function noBack() {
+        window.history.forward();
+    }
+</script>
 </body>
 </html>

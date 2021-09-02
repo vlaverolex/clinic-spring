@@ -9,5 +9,6 @@
 </head>
 <body>
 <h1>Note not found!</h1>
+<a href="/">Go Home</a>
 </body>
 </html>

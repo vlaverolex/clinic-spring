@@ -12,7 +12,7 @@
 
     <title>Admin</title>
 </head>
-<body>
+<body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
 
 <#import '../parts/header.ftlh' as h>
 <@h.header 'admin' "/admin" "" ""/>
@@ -33,5 +33,11 @@
     </div>
 </section>
 
+<script type="text/javascript">
+    window.history.forward();
+    function noBack() {
+        window.history.forward();
+    }
+</script>
 </body>
 </html>

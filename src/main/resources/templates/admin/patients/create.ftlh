@@ -22,83 +22,89 @@
 <@h.header 'admin' "/admin" "" ""/>
 
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-default" style="margin-top:45px">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><@spring.message ("addingPatient") /></h3>
-                </div>
-                <div class="panel-body">
-                    <@spring.bind ("patient.username")/>
-                    <#if spring.status.error>
-                        <#if spring.status.errorCode == "size.user.username">
-                            <div class="alert alert-danger"
-                                 role="alert"><@spring.message ("size.user.username")/></div>
-                        <#elseif spring.status.errorCode == "duplicate.user.username">
-                            <div class="alert alert-danger"
-                                 role="alert"><@spring.message ("duplicate.user.username")/></div>
-                        </#if>
-                    <#else>
-                        <@spring.bind "patient.password"/>
+<section class="section">
+    <div class="container">
+        <div>
+            <a style="text-transform: capitalize !important;" class="btn btn-info back-button"
+               href="/admin/patients"><@spring.message ("back")/></a>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default" style="margin-top:45px">
+                    <div class="panel-heading">
+                        <h3 class="panel-title"><@spring.message ("addingPatient") /></h3>
+                    </div>
+                    <div class="panel-body">
+                        <@spring.bind ("patient.username")/>
                         <#if spring.status.error>
-                            <#if spring.status.errorCode == "size.user.password">
+                            <#if spring.status.errorCode == "size.user.username">
                                 <div class="alert alert-danger"
-                                     role="alert"><@spring.message ("size.user.password")/></div>
-                            <#elseif spring.status.errorCode == "different.user.password">
+                                     role="alert"><@spring.message ("size.user.username")/></div>
+                            <#elseif spring.status.errorCode == "duplicate.user.username">
                                 <div class="alert alert-danger"
-                                     role="alert"><@spring.message ("different.user.password")/></div>
+                                     role="alert"><@spring.message ("duplicate.user.username")/></div>
+                            </#if>
+                        <#else>
+                            <@spring.bind "patient.password"/>
+                            <#if spring.status.error>
+                                <#if spring.status.errorCode == "size.user.password">
+                                    <div class="alert alert-danger"
+                                         role="alert"><@spring.message ("size.user.password")/></div>
+                                <#elseif spring.status.errorCode == "different.user.password">
+                                    <div class="alert alert-danger"
+                                         role="alert"><@spring.message ("different.user.password")/></div>
+                                </#if>
                             </#if>
                         </#if>
-                    </#if>
 
 
-                    <form action="/admin/patients/create" method="post">
-                        <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
-                        <div class="form-group">
-                            <label for="username"><@spring.message ("username")/></label>
-                            <input required type="text" class="form-control" id="username"
-                                   placeholder="<@spring.message ("username")/>"
-                                   name="username">
-                        </div>
-                        <div class="form-group">
-                            <label for="password"><@spring.message ("password")/></label>
-                            <input required type="password" class="form-control" id="password"
-                                   placeholder="<@spring.message ("password")/>"
-                                   name="password">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword"><@spring.message ("confirmPassword")/></label>
-                            <input required type="password" class="form-control" id="confirmPassword"
-                                   placeholder="<@spring.message ("confirmPassword")/>"
-                                   name="confirmPassword">
-                        </div>
-                        <div class="form-group">
-                            <label for="birthday"><@spring.message ("birthday")/></label>
-                            <input required type="date" class="form-control" id="birthday"
-                                   placeholder="<@spring.message ("birthday")/>"
-                                   name="birthday" max="${maxDate.toString()}">
-                        </div>
-                        <div class="form-group">
-                            <label for="doctorUsername"><@spring.message ("doctor")/></label>
-                            <label>
-                                <select name="doctorUsername">
-                                    <#list categoryDoctors as category, doctors>
-                                        <optgroup label="<@spring.message ("${category}")/>">
-                                            <#list doctors as doctor>
-                                                <option>${doctor.username}</option>
-                                            </#list>
-                                        </optgroup>
-                                    </#list>
-                                </select>
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-success"><@spring.message ("add")/></button>
-                    </form>
+                        <form action="/admin/patients/create" method="post">
+                            <input name="${_csrf.parameterName}" value="${_csrf.token}" type="hidden">
+                            <div class="form-group">
+                                <label for="username"><@spring.message ("username")/></label>
+                                <input required type="text" class="form-control" id="username"
+                                       placeholder="<@spring.message ("username")/>"
+                                       name="username">
+                            </div>
+                            <div class="form-group">
+                                <label for="password"><@spring.message ("password")/></label>
+                                <input required type="password" class="form-control" id="password"
+                                       placeholder="<@spring.message ("password")/>"
+                                       name="password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword"><@spring.message ("confirmPassword")/></label>
+                                <input required type="password" class="form-control" id="confirmPassword"
+                                       placeholder="<@spring.message ("confirmPassword")/>"
+                                       name="confirmPassword">
+                            </div>
+                            <div class="form-group">
+                                <label for="birthday"><@spring.message ("birthday")/></label>
+                                <input required type="date" class="form-control" id="birthday"
+                                       placeholder="<@spring.message ("birthday")/>"
+                                       name="birthday" max="${maxDate.toString()}">
+                            </div>
+                            <div class="form-group">
+                                <label for="doctorUsername"><@spring.message ("doctor")/></label>
+                                <label>
+                                    <select name="doctorUsername">
+                                        <#list categoryDoctors as category, doctors>
+                                            <optgroup label="<@spring.message ("${category}")/>">
+                                                <#list doctors as doctor>
+                                                    <option>${doctor.username}</option>
+                                                </#list>
+                                            </optgroup>
+                                        </#list>
+                                    </select>
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-success"><@spring.message ("add")/></button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 </body>
 </html>
