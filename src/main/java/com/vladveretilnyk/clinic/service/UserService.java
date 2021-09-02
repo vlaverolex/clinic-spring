@@ -84,7 +84,8 @@ public class UserService {
         LOGGER.info("User updated = {}", user);
     }
 
-    public void delete(User user) {
+    public void delete(User user) throws UserNotFoundException {
+        removeDoctorForPatient(user.getId());
         userRepository.delete(user);
     }
 

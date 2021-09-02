@@ -73,7 +73,7 @@ public class UserServiceTest {
 
     @Rollback
     @Test
-    public void patientsShouldHaveDoctor() {
+    public void patientsShouldHaveDoctor() throws UserNotFoundException {
         Doctor doctor = new Doctor();
         doctor.setUsername("test_doctor");
         doctor.setPassword("test_doctor");
@@ -91,12 +91,12 @@ public class UserServiceTest {
         List<Patient> patients = userService.findPatientsByDoctorUsername(doctor.getUsername());
         Assert.assertEquals(patients.size(), patients.stream().filter(patient -> patient.getDoctor().getUsername().equals(doctor.getUsername())).count());
 
-        patients.forEach(patient -> userService.delete(patient));
+        for(Patient patient:patients) userService.delete(patient);
         userService.delete(doctor);
     }
 
     @Test
-    public void patientsShouldHaveNurse() {
+    public void patientsShouldHaveNurse() throws UserNotFoundException {
         Nurse nurse = new Nurse();
         nurse.setUsername("test_nurse");
         nurse.setPassword("test_nurse");
@@ -114,7 +114,7 @@ public class UserServiceTest {
         List<Patient> patients = userService.findPatientsByNurseUsername(nurse.getUsername());
         Assert.assertEquals(patients.size(), patients.stream().filter(patient -> patient.getNurse().getUsername().equals(nurse.getUsername())).count());
 
-        patients.forEach(patient -> userService.delete(patient));
+        for(Patient patient:patients) userService.delete(patient);
         userService.delete(nurse);
     }
 
