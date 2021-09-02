@@ -217,8 +217,7 @@ public class AdminController {
     // DELETE PATIENT
     @PostMapping("/patients/{patientId}")
     public String deletePatient(@PathVariable Long patientId) throws UserNotFoundException {
-        userService.removeDoctorForPatient(patientId);
-        userService.removeNurseForPatient(patientId);
+        userService.delete(userService.findById(patientId));
         return "redirect:/admin/patients";
     }
 }
